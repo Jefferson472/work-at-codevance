@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     # third-apps
     # my-apps
     'apps.core',
+    'apps.user_profile',
 ]
 
 MIDDLEWARE = [
