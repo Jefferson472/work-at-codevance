@@ -1,3 +1,5 @@
+# flake8: noqa F405
+
 from .base import *
 
 
@@ -17,7 +19,6 @@ MIDDLEWARE += (
 
 INSTALLED_APPS += (
     'debug_toolbar',
-    'django_sass',
 )
 
 # IPs allowed to see django-debug-toolbar output.
@@ -29,3 +30,7 @@ DEBUG_TOOLBAR_CONFIG = {
     'SHOW_TEMPLATE_CONTEXT': True,
     'HIDE_DJANGO_SQL': True,
 }
+
+
+# EMAIL CONFIG
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

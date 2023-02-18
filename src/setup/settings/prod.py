@@ -1,3 +1,5 @@
+# flake8: noqa F405
+
 from .base import *
 
 
@@ -53,3 +55,6 @@ MIDDLEWARE = [
 ]
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+
+# ALLAUTH CONFIGURATION
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
