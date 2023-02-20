@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'crispy_forms',
+    "crispy_bootstrap5",
     # my-apps
     'apps.core',
     'apps.user_profile',
@@ -145,3 +147,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'
+
+
+# CRISPY-FORM CONFIG
+CRISPY_TEMPLATE_PACK = "bootstrap5"
