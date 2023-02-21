@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     # my-apps
     'apps.core',
     'apps.user_profile',
+    'apps.pages',
 ]
 
 MIDDLEWARE = [
