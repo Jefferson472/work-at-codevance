@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2">Payments</h1>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-hover table-sm">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Description</th>
+        <th>Value</th>
+        <th>Date Due</th>
+        <th>Supplier</th>
+        <th>Status</th>
+        <th>Antecipar</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for payment in object_list %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ payment.description }}</td>
+        <td>{{ payment.value }}</td>
+        <td>{{ payment.date_due|date:"d/m/Y" }}</td>
+        <td>{{ payment.supplier }}</td>
+        <td>{% if payment.is_active %}<span class="badge badge-success">Avaliable{% else %}<span class="badge badge-danger">Unavailable{% endif %}</span></td>
+        <!-- TODO: incluir links de ação -->
+        {% if payment.is_active %}<td style="width: 0;"><a href="#" class="btn btn-primary btn-sm">Antecipar</a></td>{% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}
