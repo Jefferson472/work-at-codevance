@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2">Antecipations</h1>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-hover table-sm">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Description</th>
+        <th>Antecipation Date</th>
+        <th>Fee</th>
+        <th>Created</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for antecipation in object_list %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ antecipation.request.payment.description }}</td>
+        <td>{{ antecipation.request.request_date|date:"d/m/Y" }}</td>
+        <td>{{ antecipation.fee }}</td>
+        <td>{{ antecipation.created }}</td>
+      </tr>
+      {% empty %}
+        No antecipation available.
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

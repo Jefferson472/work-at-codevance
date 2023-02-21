@@ -2,6 +2,7 @@ import random
 import string
 
 from django.test import TestCase
+from django.urls import resolve, reverse
 
 from apps.antecipation.models import Antecipation, LogTransactions, RequestAntecipation
 from apps.core.models import CustomUser
@@ -55,3 +56,23 @@ class LogTransactionsModelTestCase(BaseTestCase):
             value_after=90.0
         )
         self.assertEqual(LogTransactions.objects.count(), 1)
+
+
+class TestUrls(TestCase):
+    def test_antecipation_url(self):
+        self.assertEqual(reverse('antecipations_list'), '/antecipations/')
+        self.assertEqual(resolve('/antecipations/').view_name, 'antecipations_list')
+
+
+class TestAntecipationListView(TestCase):
+    def setUp(self):
+        self.user = CustomUser.objects.create(email='user@test.com')
+
+    def test_payment_list_view_anonymous_302(self):
+        response = self.client.get('/antecipations/')
+        self.assertEqual(response.status_code, 302)
+
+    def test_payment_list_view_authenticated_200(self):
+        self.client.force_login(self.user)
+        response = self.client.get('/antecipations/')
+        self.assertEqual(response.status_code, 200)
