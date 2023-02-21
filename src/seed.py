@@ -1,6 +1,9 @@
 # encoding: utf-8
 
+import random
+
 from apps.core.models import CustomUser
+from apps.payment.models import Payment
 from apps.user_profile.models import Operator, Supplier
 
 
@@ -36,3 +39,23 @@ supplier = Supplier.objects.create(
     user=user_supplier,
     name="Supplier",
 )
+
+
+# creating payments
+PAYMENTS_INFO = [
+    {'description': 'Pagamento Teste 1', 'date_due': '2023-01-01'},
+    {'description': 'Pagamento Teste 2', 'date_due': '2023-02-01'},
+    {'description': 'Pagamento Teste 3', 'date_due': '2023-03-01'},
+    {'description': 'Pagamento Teste 4', 'date_due': '2023-04-01'},
+    {'description': 'Pagamento Teste 5', 'date_due': '2023-05-01'},
+]
+payments = []
+for payment in PAYMENTS_INFO:
+    payments.append(Payment(
+        supplier=supplier,
+        description=payment['description'],
+        value=random.randrange(100, 1000),
+        date_due=payment['date_due'],
+    ))
+
+Payment.objects.bulk_create(payments)
