@@ -29,8 +29,8 @@ user_supplier = CustomUser.objects.create(
     email="supplier@test.com",
 )
 
-user_operator.set_password("test123456")
-user_operator.save()
+user_supplier.set_password("test123456")
+user_supplier.save()
 
 supplier = Supplier.objects.create(
     user=user_supplier,
