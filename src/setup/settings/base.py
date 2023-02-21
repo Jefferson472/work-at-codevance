@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'apps.user_profile',
     'apps.pages',
     'apps.payment',
+    'apps.antecipation',
 ]
 
 MIDDLEWARE = [
