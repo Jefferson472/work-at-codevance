@@ -12,7 +12,7 @@ class RequestAntecipation(models.Model):
     )
 
     payment = models.OneToOneField(Payment, on_delete=models.SET_NULL, null=True, related_name='anticipation')
-    requester = models.OneToOneField(CustomUser, on_delete=models.SET_NULL, null=True, related_name='requester')
+    requester = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name='requester')
     request_date = models.DateField()
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='0')
     created = models.DateTimeField(auto_now_add=True)
