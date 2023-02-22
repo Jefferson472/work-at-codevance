@@ -52,7 +52,7 @@ def antecipation_approve(request, **kwargs):
     req_antecipation.status = '1'
     req_antecipation.save()
 
-    new_value = req_antecipation.payment.value + req_antecipation.fee
+    new_value = req_antecipation.payment.value - req_antecipation.fee
     operator = Operator.objects.get(user=request.user)
     Antecipation.objects.create(
         operator=operator,
