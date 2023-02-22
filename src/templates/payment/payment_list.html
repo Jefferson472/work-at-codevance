@@ -19,7 +19,7 @@
         <th>Date Due</th>
         <th>Supplier</th>
         <th>Status</th>
-        <th>Antecipar</th>
+        <th>To Antecipate</th>
       </tr>
     </thead>
     <tbody>
@@ -31,8 +31,15 @@
         <td>{{ payment.date_due|date:"d/m/Y" }}</td>
         <td>{{ payment.supplier }}</td>
         <td>{% if payment.is_active %}<span class="badge badge-success">Avaliable{% else %}<span class="badge badge-danger">Unavailable{% endif %}</span></td>
-        <!-- TODO: incluir links de ação -->
-        {% if payment.is_active %}<td style="width: 0;"><a href="#" class="btn btn-primary btn-sm">Antecipar</a></td>{% endif %}
+        {% if payment.is_active %}
+          <td style="width: 0;">
+            {% if payment.anticipation %}
+              <button class="btn btn-secondary btn-sm">Requested</a>
+            {% else %}
+              <a href="{% url 'antecipation_create' payment.id %}" class="btn btn-primary btn-sm">To Antecipate</a>
+            {% endif %}
+          </td>
+        {% endif %}
       </tr>
       {% endfor %}
     </tbody>
