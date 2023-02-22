@@ -6,6 +6,7 @@ from django.views.generic.edit import CreateView
 
 from apps.antecipation.forms import RequestAntecipationForm
 from apps.antecipation.models import Antecipation, RequestAntecipation, LogTransactions
+from apps.antecipation.tasks import log_create
 from apps.user_profile.models import Operator
 
 
@@ -59,4 +60,16 @@ def antecipation_approve(request, **kwargs):
         request_antecipation=req_antecipation,
         new_value=new_value
     )
+    log_create(req_antecipation.id, operator.id)
+    return HttpResponseRedirect(reverse_lazy('request_antecipations_list'))
+
+
+def antecipation_reprove(request, **kwargs):
+    req_antecipation = RequestAntecipation.objects.get(id=kwargs['pk'])
+    req_antecipation.status = '2'
+    req_antecipation.save()
+
+    operator = Operator.objects.get(user=request.user)
+    log_create(req_antecipation.id, operator.id)
+
     return HttpResponseRedirect(reverse_lazy('request_antecipations_list'))
