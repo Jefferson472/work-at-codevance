@@ -24,7 +24,8 @@ class BaseTestCase(TestCase):
         )
         self.request_antecipation = RequestAntecipation.objects.create(
             payment=self.payment,
-            requester=self.user_operator
+            requester=self.user_operator,
+            request_date='2023-02-01'
         )
 
 
@@ -63,16 +64,29 @@ class TestUrls(TestCase):
         self.assertEqual(reverse('antecipations_list'), '/antecipations/')
         self.assertEqual(resolve('/antecipations/').view_name, 'antecipations_list')
 
+    def test_request_antecipation_url(self):
+        self.assertEqual(reverse('request_antecipations_list'), '/antecipations-request/')
+        self.assertEqual(resolve('/antecipations-request/').view_name, 'request_antecipations_list')
 
-class TestAntecipationListView(TestCase):
+
+class TestAntecipationView(TestCase):
     def setUp(self):
         self.user = CustomUser.objects.create(email='user@test.com')
 
-    def test_payment_list_view_anonymous_302(self):
+    def test_antecipations_list_view_anonymous_302(self):
         response = self.client.get('/antecipations/')
         self.assertEqual(response.status_code, 302)
 
-    def test_payment_list_view_authenticated_200(self):
+    def test_antecipations_list_view_authenticated_200(self):
         self.client.force_login(self.user)
         response = self.client.get('/antecipations/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_antecipations_request_list_view_anonymous_302(self):
+        response = self.client.get('/antecipations-request/')
+        self.assertEqual(response.status_code, 302)
+
+    def test_antecipations_request_list_view_authenticated_200(self):
+        self.client.force_login(self.user)
+        response = self.client.get('/antecipations-request/')
         self.assertEqual(response.status_code, 200)
