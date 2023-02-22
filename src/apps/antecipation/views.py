@@ -6,7 +6,7 @@ from django.views.generic.edit import CreateView
 
 from apps.antecipation.forms import RequestAntecipationForm
 from apps.antecipation.models import Antecipation, RequestAntecipation, LogTransactions
-from apps.antecipation.tasks import log_create
+from apps.antecipation.tasks import log_create, send_email
 from apps.user_profile.models import Operator
 
 
@@ -38,12 +38,15 @@ class RequestAntecipationCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('payments_list')
 
     def form_valid(self, form):
-        form.instance.payment_id = self.kwargs['pk']
+        payment_id = self.kwargs['pk']
+        form.instance.payment_id = payment_id
         form.instance.requester = self.request.user
         form.instance.fee = form.instance.calculated_fee
         response = super().form_valid(form)
 
         log_create(self.object.id, self.request.user.id, type='0')
+        msg = 'Pedido de antecipação encaminhado com sucesso!'
+        send_email(payment_id, msg)
         return response
 
 
@@ -64,6 +67,8 @@ def antecipation_approve(request, **kwargs):
         new_value=new_value
     )
     log_create(req_antecipation.id, request.user.id, type='1')
+    msg = 'Pedido de antecipação aprovado!'
+    send_email(req_antecipation.payment.id, msg)
     return HttpResponseRedirect(reverse_lazy('request_antecipations_list'))
 
 
@@ -73,5 +78,7 @@ def antecipation_reprove(request, **kwargs):
     req_antecipation.save()
 
     log_create(req_antecipation.id, request.user.id, type='2')
+    msg = 'Pedido de antecipação reprovado!'
+    send_email(req_antecipation.payment.id, msg)
 
     return HttpResponseRedirect(reverse_lazy('request_antecipations_list'))
