@@ -41,7 +41,10 @@ class RequestAntecipationCreateView(LoginRequiredMixin, CreateView):
         form.instance.payment_id = self.kwargs['pk']
         form.instance.requester = self.request.user
         form.instance.fee = form.instance.calculated_fee
-        return super().form_valid(form)
+        response = super().form_valid(form)
+
+        log_create(self.object.id, self.request.user.id, type='0')
+        return response
 
 
 class LogTransactionsListView(BaseListView):
@@ -60,7 +63,7 @@ def antecipation_approve(request, **kwargs):
         request_antecipation=req_antecipation,
         new_value=new_value
     )
-    log_create(req_antecipation.id, operator.id)
+    log_create(req_antecipation.id, request.user.id, type='1')
     return HttpResponseRedirect(reverse_lazy('request_antecipations_list'))
 
 
@@ -69,7 +72,6 @@ def antecipation_reprove(request, **kwargs):
     req_antecipation.status = '2'
     req_antecipation.save()
 
-    operator = Operator.objects.get(user=request.user)
-    log_create(req_antecipation.id, operator.id)
+    log_create(req_antecipation.id, request.user.id, type='2')
 
     return HttpResponseRedirect(reverse_lazy('request_antecipations_list'))
