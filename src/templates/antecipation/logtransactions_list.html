@@ -16,6 +16,7 @@
         <th>Status</th>
         <th>Value Before</th>
         <th>Value After</th>
+        <th>Log Type</th>
         <th>Created</th>
       </tr>
     </thead>
@@ -28,6 +29,7 @@
         <td>{{ log.status_after }}</td>
         <td>{{ log.value_before }}</td>
         <td>{{ log.value_after }}</td>
+        <td>{{ log.get_transaction_type_display }}</td>
         <td>{{ log.created }}</td>
       </tr>
       {% empty %}
