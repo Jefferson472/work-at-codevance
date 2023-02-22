@@ -45,3 +45,18 @@ class RequestAntecipationCreateView(LoginRequiredMixin, CreateView):
 
 class LogTransactionsListView(BaseListView):
     model = LogTransactions
+
+
+def antecipation_approve(request, **kwargs):
+    req_antecipation = RequestAntecipation.objects.get(id=kwargs['pk'])
+    req_antecipation.status = '1'
+    req_antecipation.save()
+
+    new_value = req_antecipation.payment.value + req_antecipation.fee
+    operator = Operator.objects.get(user=request.user)
+    Antecipation.objects.create(
+        operator=operator,
+        request_antecipation=req_antecipation,
+        new_value=new_value
+    )
+    return HttpResponseRedirect(reverse_lazy('request_antecipations_list'))
