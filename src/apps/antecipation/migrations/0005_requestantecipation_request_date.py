@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='requestantecipation',
             name='request_date',
-            field=models.DateField(default=''),
+            field=models.DateField(),
             preserve_default=False,
         ),
     ]
