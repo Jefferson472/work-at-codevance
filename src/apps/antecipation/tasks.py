@@ -1,3 +1,4 @@
+from celery import shared_task
 from django.conf import settings
 from django.core.mail import send_mail
 
@@ -6,6 +7,7 @@ from apps.core.models import CustomUser
 from apps.payment.models import Payment
 
 
+@shared_task
 def log_create(req_antecipation_id, user_id, type):
     req_antecipation = RequestAntecipation.objects.get(id=req_antecipation_id)
     requester = CustomUser.objects.get(id=user_id)
@@ -19,6 +21,7 @@ def log_create(req_antecipation_id, user_id, type):
     )
 
 
+@shared_task
 def send_email(payment_id, msg):
     payment = Payment.objects.get(id=payment_id)
     subject = f'Status do Pagamento {payment.id} alterado'

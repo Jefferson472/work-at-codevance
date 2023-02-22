@@ -44,9 +44,9 @@ class RequestAntecipationCreateView(LoginRequiredMixin, CreateView):
         form.instance.fee = form.instance.calculated_fee
         response = super().form_valid(form)
 
-        log_create(self.object.id, self.request.user.id, type='0')
+        log_create.delay(self.object.id, self.request.user.id, type='0')
         msg = 'Pedido de antecipação encaminhado com sucesso!'
-        send_email(payment_id, msg)
+        send_email.delay(payment_id, msg)
         return response
 
 
@@ -66,9 +66,9 @@ def antecipation_approve(request, **kwargs):
         request_antecipation=req_antecipation,
         new_value=new_value
     )
-    log_create(req_antecipation.id, request.user.id, type='1')
+    log_create.delay(req_antecipation.id, request.user.id, type='1')
     msg = 'Pedido de antecipação aprovado!'
-    send_email(req_antecipation.payment.id, msg)
+    send_email.delay(req_antecipation.payment.id, msg)
     return HttpResponseRedirect(reverse_lazy('request_antecipations_list'))
 
 
@@ -77,8 +77,8 @@ def antecipation_reprove(request, **kwargs):
     req_antecipation.status = '2'
     req_antecipation.save()
 
-    log_create(req_antecipation.id, request.user.id, type='2')
+    log_create.delay(req_antecipation.id, request.user.id, type='2')
     msg = 'Pedido de antecipação reprovado!'
-    send_email(req_antecipation.payment.id, msg)
+    send_email.delay(req_antecipation.payment.id, msg)
 
     return HttpResponseRedirect(reverse_lazy('request_antecipations_list'))
