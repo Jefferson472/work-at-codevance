@@ -2,6 +2,9 @@
 
 import random
 
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
+
 from apps.core.models import CustomUser
 from apps.payment.models import Payment
 from apps.user_profile.models import Operator, Supplier
@@ -25,6 +28,10 @@ operator = Operator.objects.create(
     user=user_operator,
     name="Operator",
 )
+
+content_type = ContentType.objects.get_for_model(Operator)
+all_permissions = Permission.objects.filter(content_type=content_type)
+operator.user.user_permissions.set(all_permissions)
 
 
 # creating suplier profile
