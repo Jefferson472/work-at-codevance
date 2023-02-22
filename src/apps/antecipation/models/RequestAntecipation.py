@@ -1,7 +1,14 @@
+from datetime import date
+from decimal import Decimal
 from django.db import models
+
 
 from apps.core.models import CustomUser
 from apps.payment.models import Payment
+
+
+TAX = 3 / 100
+DAILY_TAX = Decimal(TAX / 30)
 
 
 class RequestAntecipation(models.Model):
@@ -21,3 +28,11 @@ class RequestAntecipation(models.Model):
 
     def __str__(self):
         return f'{self.payment} - {self.get_status_display()}'
+
+    @property
+    def calculated_fee(self):
+        if self.payment.date_due > date.today():
+            difference = self.payment.date_due - self.request_date
+            fee = self.payment.value * DAILY_TAX * difference.days
+            return fee
+        return 0

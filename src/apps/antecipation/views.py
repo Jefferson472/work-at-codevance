@@ -23,6 +23,7 @@ class RequestAntecipationCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.payment_id = self.kwargs['pk']
         form.instance.requester = self.request.user
+        form.instance.fee = form.instance.calculated_fee
         return super().form_valid(form)
 
 
