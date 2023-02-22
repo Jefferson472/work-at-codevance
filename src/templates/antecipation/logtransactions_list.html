@@ -23,7 +23,7 @@
       {% for log in object_list %}
       <tr>
         <td>{{ forloop.counter }}</td>
-        <td>{{ log.request.payment.description }}</td>
+        <td>{{ log.request_antecipation.payment.description }}</td>
         <td>{{ log.operator }}</td>
         <td>{{ log.status_after }}</td>
         <td>{{ log.value_before }}</td>
