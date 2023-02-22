@@ -7,4 +7,5 @@ class Operator(BaseProfile):
         permissions = [
             ('payment_view', 'Can see all payments'),
             ('payment_create', 'Can create new payments'),
+            ('antecipation_request_review', 'Can approve or reprove a antecipation request'),
         ]

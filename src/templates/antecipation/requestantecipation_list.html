@@ -15,7 +15,7 @@
         <th>Antecipation Date</th>
         <th>Created</th>
         <th>Status</th>
-        <th>Avaliar</th>
+        {% if perms.user_profile.antecipation_request_review %}<th>Avaliar</th>{% endif %}
       </tr>
     </thead>
     <tbody>
@@ -25,13 +25,15 @@
         <td>{{ request.payment.description }}</td>
         <td>{{ request.request_date|date:"d/m/Y" }}</td>
         <td>{{ request.created }}</td>
-        <td><span class="badge badge-{% if request.status == '0' %}secondary{% elif request.status == '1' %}success{% else %}danger">{{ request.get_status_display }}{% endif %}</span></td>
+        <td><span class="badge badge-{% if request.status == '0' %}secondary{% elif request.status == '1' %}success{% else %}danger{% endif %}">{{ request.get_status_display }}</span></td>
         <!-- TODO: incluir links de ação -->
-        {% if request.status == '0' %}
-          <td style="width: 0;">
-            <a href="#" class="btn btn-primary btn-sm">Sucesso</a>
-            <a href="#" class="btn btn-secondary btn-sm">Reprovar</a>
-          </td>
+        {% if perms.user_profile.antecipation_request_review %}
+          {% if request.status == '0' %}
+            <td>
+              <a href="#" class="btn btn-success btn-sm">Approve</a>
+              <a href="#" class="btn btn-danger btn-sm">Reprove</a>
+            </td>
+          {% endif %}
         {% endif %}
       </tr>
       {% empty %}
