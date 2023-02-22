@@ -10,6 +10,12 @@ from apps.payment.forms import PaymentForm
 class PaymentsListView(LoginRequiredMixin, ListView):
     model = Payment
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if not self.request.user.has_perm('user_profile.payment_view'):
+            return queryset.filter(supplier__user=self.request.user)
+        return queryset
+
 
 class PaymentCreateView(LoginRequiredMixin, CreateView):
     model = Payment
