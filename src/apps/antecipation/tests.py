@@ -68,6 +68,10 @@ class TestUrls(TestCase):
         self.assertEqual(reverse('request_antecipations_list'), '/antecipations-request/')
         self.assertEqual(resolve('/antecipations-request/').view_name, 'request_antecipations_list')
 
+    def test_log_transactions_url(self):
+        self.assertEqual(reverse('log_transactions_list'), '/logs/')
+        self.assertEqual(resolve('/logs/').view_name, 'log_transactions_list')
+
 
 class TestAntecipationView(TestCase):
     def setUp(self):
@@ -89,4 +93,13 @@ class TestAntecipationView(TestCase):
     def test_antecipations_request_list_view_authenticated_200(self):
         self.client.force_login(self.user)
         response = self.client.get('/antecipations-request/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_logs_list_view_anonymous_302(self):
+        response = self.client.get('/logs/')
+        self.assertEqual(response.status_code, 302)
+
+    def test_logs_list_view_authenticated_200(self):
+        self.client.force_login(self.user)
+        response = self.client.get('/logs/')
         self.assertEqual(response.status_code, 200)

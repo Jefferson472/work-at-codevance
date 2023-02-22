@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2">Logs</h1>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-hover table-sm">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Description</th>
+        <th>Operator</th>
+        <th>Status</th>
+        <th>Value Before</th>
+        <th>Value After</th>
+        <th>Created</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for log in object_list %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ log.request.payment.description }}</td>
+        <td>{{ log.operator }}</td>
+        <td>{{ log.status_after }}</td>
+        <td>{{ log.value_before }}</td>
+        <td>{{ log.value_after }}</td>
+        <td>{{ log.created }}</td>
+      </tr>
+      {% empty %}
+        No Logs available.
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}
