@@ -13,6 +13,9 @@
         <th>#</th>
         <th>Description</th>
         <th>Antecipation Date</th>
+        <th>Actual Value</th>
+        <th>Fee</th>
+        <th>New Value</th>
         <th>Created</th>
         <th>Status</th>
         {% if perms.user_profile.antecipation_request_review %}<th>Avaliar</th>{% endif %}
@@ -24,6 +27,9 @@
         <td>{{ forloop.counter }}</td>
         <td>{{ request.payment.description }}</td>
         <td>{{ request.request_date|date:"d/m/Y" }}</td>
+        <td>{{ request.payment.value }}</td>
+        <td>{{ request.fee }}</td>
+        <td>{{ request.fee|add:request.payment.value|floatformat:2 }}</td>
         <td>{{ request.created }}</td>
         <td><span class="badge badge-{% if request.status == '0' %}secondary{% elif request.status == '1' %}success{% else %}danger{% endif %}">{{ request.get_status_display }}</span></td>
         <!-- TODO: incluir links de ação -->
