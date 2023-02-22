@@ -39,7 +39,7 @@
         {% if perms.user_profile.antecipation_request_review %}
           {% if request.status == '0' %}
             <td>
-              <a href="#" class="btn btn-success btn-sm">Approve</a>
+              <a href="{% url 'request_antecipations_approve' request.id %}" class="btn btn-success btn-sm">Approve</a>
               <a href="#" class="btn btn-danger btn-sm">Reprove</a>
             </td>
           {% endif %}
