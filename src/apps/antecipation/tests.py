@@ -1,10 +1,12 @@
 import random
 import string
+from datetime import date, timedelta
 
 from django.test import TestCase
 from django.urls import resolve, reverse
 
 from apps.antecipation.models import Antecipation, LogTransactions, RequestAntecipation
+from apps.antecipation.models.RequestAntecipation import DAILY_TAX
 from apps.core.models import CustomUser
 from apps.payment.models import Payment
 from apps.user_profile.models import Operator
@@ -25,7 +27,8 @@ class BaseTestCase(TestCase):
         self.request_antecipation = RequestAntecipation.objects.create(
             payment=self.payment,
             requester=self.user_operator,
-            request_date='2023-02-01'
+            request_date='2023-02-01',
+            fee=0,
         )
 
 
@@ -36,13 +39,21 @@ class RequestAntecipationTestCase(BaseTestCase):
     def test_request_antecipation_status_choices(self):
         self.assertEqual(self.request_antecipation.get_status_display(), 'Aguardando avaliação')
 
+    def test_calculated_fee(self):
+        payment = Payment.objects.create(value=1000, date_due=date.today() + timedelta(days=1))
+        expected_fee = payment.value * DAILY_TAX * 1
+        request_antecipation = RequestAntecipation.objects.create(
+            payment=payment, requester_id=1, request_date=date.today(), fee=expected_fee,
+        )
+        self.assertEqual(request_antecipation.calculated_fee, expected_fee)
+
 
 class AntecipationModelTestCase(BaseTestCase):
     def test_antecipation_creation(self):
         Antecipation.objects.create(
             operator=self.operator,
             request_antecipation=self.request_antecipation,
-            fee=5.00
+            new_value=5.00
         )
         self.assertEqual(Antecipation.objects.count(), 1)
 
