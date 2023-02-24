@@ -52,7 +52,9 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'crispy_forms',
-    "crispy_bootstrap5",
+    'crispy_bootstrap5',
+    'rest_framework',
+    'rest_framework_simplejwt',
     # my-apps
     'apps.core',
     'apps.user_profile',
@@ -159,3 +161,16 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 # Celery settings
 CELERY_BROKER_URL = env('CELERY_BROKER_URL')
 CELERY_TIMEZONE = TIME_ZONE
+
+
+# DJANGO REST FRAMEWORK CONFIG
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
