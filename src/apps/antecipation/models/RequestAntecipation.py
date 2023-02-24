@@ -18,7 +18,7 @@ class RequestAntecipation(models.Model):
         ('2', 'Não aprovado'),
     )
 
-    payment = models.OneToOneField(Payment, on_delete=models.SET_NULL, null=True, related_name='anticipation')
+    payment = models.OneToOneField(Payment, on_delete=models.SET_NULL, null=True, related_name='req_antecipation')
     requester = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name='requester')
     request_date = models.DateField()
     fee = models.DecimalField(max_digits=10, decimal_places=2)

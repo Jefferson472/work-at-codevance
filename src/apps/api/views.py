@@ -5,5 +5,5 @@ from apps.payment.models import Payment
 
 
 class PaymentListView(ListAPIView):
-    queryset = Payment.objects.select_related('anticipation')
+    queryset = Payment.objects.select_related('req_antecipation')
     serializer_class = PaymentSerializer

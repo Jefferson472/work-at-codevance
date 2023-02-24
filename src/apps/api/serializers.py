@@ -11,7 +11,7 @@ class AntecipationSerializer(serializers.ModelSerializer):
 
 
 class RequestAntecipationSerializer(serializers.ModelSerializer):
-    request = AntecipationSerializer(read_only=True)
+    antecipation = AntecipationSerializer(read_only=True)
 
     class Meta:
         model = RequestAntecipation
@@ -23,12 +23,12 @@ class RequestAntecipationSerializer(serializers.ModelSerializer):
             'status',
             'created',
             'updated',
-            'request'
+            'antecipation'
         ]
 
 
 class PaymentSerializer(serializers.ModelSerializer):
-    anticipation = RequestAntecipationSerializer(read_only=True)
+    req_antecipation = RequestAntecipationSerializer(read_only=True)
 
     class Meta:
         model = Payment
@@ -39,5 +39,5 @@ class PaymentSerializer(serializers.ModelSerializer):
             'date_due',
             'is_active',
             'created',
-            'anticipation',
+            'req_antecipation',
         ]
