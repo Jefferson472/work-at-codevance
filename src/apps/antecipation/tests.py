@@ -52,7 +52,7 @@ class AntecipationModelTestCase(BaseTestCase):
     def test_antecipation_creation(self):
         Antecipation.objects.create(
             operator=self.operator,
-            request_antecipation=self.request_antecipation,
+            req_antecipation=self.request_antecipation,
             new_value=5.00
         )
         self.assertEqual(Antecipation.objects.count(), 1)
@@ -61,8 +61,8 @@ class AntecipationModelTestCase(BaseTestCase):
 class LogTransactionsModelTestCase(BaseTestCase):
     def test_log_transactions_creation(self):
         LogTransactions.objects.create(
-            operator=self.operator,
-            request=self.request_antecipation,
+            requester=self.user_operator,
+            req_antecipation=self.request_antecipation,
             status_after="approved",
             value_before=100.0,
             value_after=90.0

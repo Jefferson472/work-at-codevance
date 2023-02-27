@@ -14,7 +14,7 @@ class BaseListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         if not self.request.user.has_perm('user_profile.antecipation_view'):
-            return queryset.filter(request_antecipation__payment__supplier__user=self.request.user)
+            return queryset.filter(req_antecipation__payment__supplier__user=self.request.user)
         return queryset
 
 

@@ -21,8 +21,8 @@
       {% for antecipation in object_list %}
       <tr>
         <td>{{ forloop.counter }}</td>
-        <td>{{ antecipation.request_antecipation.payment.description }}</td>
-        <td>{{ antecipation.request_antecipation.request_date|date:"d/m/Y" }}</td>
+        <td>{{ antecipation.req_antecipation.payment.description }}</td>
+        <td>{{ antecipation.req_antecipation.request_date|date:"d/m/Y" }}</td>
         <td>{{ antecipation.new_value }}</td>
         <td>{{ antecipation.created|date:"d/m/Y" }}</td>
       </tr>
