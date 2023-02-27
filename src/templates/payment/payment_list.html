@@ -33,7 +33,7 @@
         <td>{% if payment.is_active %}<span class="badge badge-success">Avaliable{% else %}<span class="badge badge-danger">Unavailable{% endif %}</span></td>
         {% if payment.is_active %}
           <td style="width: 0;">
-            {% if payment.anticipation %}
+            {% if payment.req_antecipation %}
               <button class="btn btn-secondary btn-sm">Requested</a>
             {% else %}
               <a href="{% url 'antecipation_create' payment.id %}" class="btn btn-primary btn-sm">To Antecipate</a>

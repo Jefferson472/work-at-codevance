@@ -63,7 +63,7 @@ def antecipation_approve(request, **kwargs):
     operator = Operator.objects.get(user=request.user)
     Antecipation.objects.create(
         operator=operator,
-        request_antecipation=req_antecipation,
+        req_antecipation=req_antecipation,
         new_value=new_value
     )
     log_create.delay(req_antecipation.id, request.user.id, type='1')
