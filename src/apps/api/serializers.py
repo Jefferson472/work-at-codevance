@@ -16,6 +16,7 @@ class RequestAntecipationSerializer(serializers.ModelSerializer):
     class Meta:
         model = RequestAntecipation
         fields = [
+            'id',
             'payment',
             'requester',
             'request_date',
@@ -27,12 +28,25 @@ class RequestAntecipationSerializer(serializers.ModelSerializer):
         ]
 
 
+class RequestAntecipationCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RequestAntecipation
+        fields = [
+            'payment',
+            'requester',
+            'request_date',
+        ]
+
+    def get_fee(self, obj):
+        return obj.calculated_fee
+
 class PaymentSerializer(serializers.ModelSerializer):
     req_antecipation = RequestAntecipationSerializer(read_only=True)
 
     class Meta:
         model = Payment
         fields = [
+            'id',
             'supplier',
             'description',
             'value',
@@ -41,3 +55,9 @@ class PaymentSerializer(serializers.ModelSerializer):
             'created',
             'req_antecipation',
         ]
+
+
+class RequestAntecipationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RequestAntecipation
+        fields = ['id', 'payment_id', 'requester', 'fee']

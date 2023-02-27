@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework import routers
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from apps.api.views import PaymentListView
+from apps.api.views import PaymentListView, RequestAntecipationCreateAPIView
 
 
 router = routers.DefaultRouter()
@@ -17,4 +17,5 @@ urlpatterns = [
     # endpoints
     path('payments/', PaymentListView.as_view(), name='api_payment_list'),
     path('payments/<str:status>/', PaymentListView.as_view(), name='api_payment_list_status'),
+    path('antecipation/create/', RequestAntecipationCreateAPIView.as_view(), name='request_antecipation_create'),
 ]

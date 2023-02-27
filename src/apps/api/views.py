@@ -1,7 +1,14 @@
-from rest_framework.generics import ListAPIView
-from rest_framework.exceptions import NotFound
+from datetime import datetime
 
-from apps.api.serializers import PaymentSerializer
+from rest_framework import status
+from rest_framework.exceptions import NotFound
+from rest_framework.generics import ListAPIView
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from apps.api.serializers import PaymentSerializer, RequestAntecipationCreateSerializer
+from apps.antecipation.models import RequestAntecipation
+from apps.antecipation.tasks import log_create, send_email
 from apps.payment.models import Payment
 
 
@@ -29,3 +36,25 @@ class PaymentListView(ListAPIView):
             else:
                 raise NotFound(detail="The requested status was not found in the payment list", code=404)
         return qs
+
+
+class RequestAntecipationCreateAPIView(APIView):
+    def post(self, request):
+
+        serializer = RequestAntecipationCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        payment = Payment.objects.filter(id=serializer.data['payment']).first()
+        if not payment or not payment.is_active:
+            return Response({'detail': 'Pagamento não encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+        difference = payment.date_due - datetime.strptime(serializer.data['request_date'], '%Y-%m-%d').date()
+        fee = payment.value * RequestAntecipation.DAILY_TAX * difference.days
+
+        serializer.save(payment=payment, requester=request.user, fee=fee)
+
+        log_create.delay(serializer.instance.id, request.user.id, type='0')
+        msg = 'Pedido de antecipação encaminhado com sucesso!'
+        send_email.delay(payment.id, msg)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
