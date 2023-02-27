@@ -1,4 +1,5 @@
 from rest_framework.generics import ListAPIView
+from rest_framework.exceptions import NotFound
 
 from apps.api.serializers import PaymentSerializer
 from apps.payment.models import Payment
@@ -23,5 +24,8 @@ class PaymentListView(ListAPIView):
                 'approval': qs.filter(req_antecipation__status='1'),
                 'disapproval': qs.filter(req_antecipation__status='2'),
             }
-            return status[query]
+            if query in status:
+                return status[query]
+            else:
+                raise NotFound(detail="The requested status was not found in the payment list", code=404)
         return qs
