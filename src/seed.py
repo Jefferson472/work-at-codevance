@@ -4,6 +4,7 @@ import random
 
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
+from django.utils import timezone
 
 from apps.core.models import CustomUser
 from apps.payment.models import Payment
@@ -50,11 +51,11 @@ supplier = Supplier.objects.create(
 
 # creating payments
 PAYMENTS_INFO = [
-    {'description': 'Pagamento Teste 1', 'date_due': '2023-01-01'},
-    {'description': 'Pagamento Teste 2', 'date_due': '2023-02-01'},
-    {'description': 'Pagamento Teste 3', 'date_due': '2023-03-01'},
-    {'description': 'Pagamento Teste 4', 'date_due': '2023-04-01'},
-    {'description': 'Pagamento Teste 5', 'date_due': '2023-05-01'},
+    {'description': 'Pagamento Teste 1', 'date_due': timezone.now().date() - timezone.timedelta(days=30)},
+    {'description': 'Pagamento Teste 2', 'date_due': timezone.now().date() + timezone.timedelta(days=30)},
+    {'description': 'Pagamento Teste 3', 'date_due': timezone.now().date() + timezone.timedelta(days=60)},
+    {'description': 'Pagamento Teste 4', 'date_due': timezone.now().date() + timezone.timedelta(days=90)},
+    {'description': 'Pagamento Teste 5', 'date_due': timezone.now().date() + timezone.timedelta(days=120)},
 ]
 payments = []
 for payment in PAYMENTS_INFO:
