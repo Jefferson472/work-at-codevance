@@ -16,4 +16,5 @@ urlpatterns = [
 
     # endpoints
     path('payments/', PaymentListView.as_view(), name='api_payment_list'),
+    path('payments/<str:status>/', PaymentListView.as_view(), name='api_payment_list_status'),
 ]
