@@ -1,3 +1,8 @@
+<div align="center" id="badges">
+    <img src="https://img.shields.io/badge/STATUS-COMPLETED-green"/>
+</div>
+
+
 # Documentação do Projeto Codevance Payments
 
 O projeto Codevance Payments é um gerenciador de pagamentos que permite aos fornecedores acessarem seus pagamentos e solicitar antecipações mediante à taxas baseadas no valor e na quantidade de dias a serem antecipados. O projeto está hospedado na Plataforma Render e pode ser acessado através do link abaixo:
