@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+from apps.user_profile.models import Supplier, Operator
+
+
+admin.site.register(Supplier)
+admin.site.register(Operator)
