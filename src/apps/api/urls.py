@@ -11,8 +11,8 @@ router.register('payments', PaymentListView)
 urlpatterns = [
     # auth
     path('api-auth/', include('rest_framework.urls')),
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     # endpoints
     path('payments/', PaymentListView.as_view(), name='api_payment_list'),
