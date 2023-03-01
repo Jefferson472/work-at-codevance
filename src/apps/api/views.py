@@ -41,12 +41,12 @@ class PaymentListView(ListAPIView):
 class RequestAntecipationCreateAPIView(APIView):
     def post(self, request):
         data = request.data
-        serializer = RequestAntecipationCreateSerializer(data=data)
-        serializer.is_valid(raise_exception=True)
-
         payment = Payment.objects.filter(id=data.get('payment'), supplier__user=request.user).first()
         if not payment or not payment.is_active:
             raise NotFound(detail="The requested payment was not found in the payment list", code=404)
+
+        serializer = RequestAntecipationCreateSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
 
         difference = payment.date_due - datetime.strptime(data.get('request_date'), '%Y-%m-%d').date()
         fee = payment.value * DAILY_TAX * difference.days
