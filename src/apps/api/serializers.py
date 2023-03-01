@@ -40,6 +40,7 @@ class RequestAntecipationCreateSerializer(serializers.ModelSerializer):
     def get_fee(self, obj):
         return obj.calculated_fee
 
+
 class PaymentSerializer(serializers.ModelSerializer):
     req_antecipation = RequestAntecipationSerializer(read_only=True)
 

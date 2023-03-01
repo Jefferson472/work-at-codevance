@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.api.serializers import PaymentSerializer, RequestAntecipationCreateSerializer
-from apps.antecipation.models import RequestAntecipation
+from apps.antecipation.models import DAILY_TAX
 from apps.antecipation.tasks import log_create, send_email
 from apps.payment.models import Payment
 
@@ -40,21 +40,21 @@ class PaymentListView(ListAPIView):
 
 class RequestAntecipationCreateAPIView(APIView):
     def post(self, request):
-
-        serializer = RequestAntecipationCreateSerializer(data=request.data)
+        data = request.data
+        serializer = RequestAntecipationCreateSerializer(data=data)
         serializer.is_valid(raise_exception=True)
 
-        payment = Payment.objects.filter(id=serializer.data['payment']).first()
+        payment = Payment.objects.filter(id=data.get('payment'), supplier__user=request.user).first()
         if not payment or not payment.is_active:
             return Response({'detail': 'Pagamento não encontrado.'}, status=status.HTTP_404_NOT_FOUND)
 
-        difference = payment.date_due - datetime.strptime(serializer.data['request_date'], '%Y-%m-%d').date()
-        fee = payment.value * RequestAntecipation.DAILY_TAX * difference.days
+        difference = payment.date_due - datetime.strptime(data.get('request_date'), '%Y-%m-%d').date()
+        fee = payment.value * DAILY_TAX * difference.days
 
-        serializer.save(payment=payment, requester=request.user, fee=fee)
+        serializer.save(payment=payment, requester=request.user, fee=fee, request_date=data.get('request_date'))
 
         log_create.delay(serializer.instance.id, request.user.id, type='0')
         msg = 'Pedido de antecipação encaminhado com sucesso!'
         send_email.delay(payment.id, msg)
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(msg, status=status.HTTP_201_CREATED)
