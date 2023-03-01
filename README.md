@@ -1,3 +1,138 @@
+# Documentação do Projeto Codevance Payments
+
+O projeto Codevance Payments é um gerenciador de pagamentos que permite aos fornecedores acessarem seus pagamentos e solicitar antecipações mediante à taxas baseadas no valor e na quantidade de dias a serem antecipados. O projeto está hospedado na Plataforma Render e pode ser acessado através do link abaixo:
+
+[Codevance Payments](https://codevance-payments.onrender.com)
+
+---
+## Instalando e Executando o Projeto
+Para executar o projeto localize o arquivo `default.env` e renomei para `.env` fornecendo os valores para as varáveis de ambiente. Se estiver executando local, somente os valores das variáveis `SECRET_KEY` e `CELERY_BROKER_URL` são necessárias.
+
+Execute os comandos abaixo:
+
+1. Instale as dependências do projeto:
+
+    `python -m pip install -r requirements-dev.txt` se estiver rodando local 
+
+    `python -m pip install -r requirements.txt` se estiver rodando em produção
+
+2. Rode as migrações para inicializar o banco de dados:
+
+    `python src/manage.py migrate --settings=setup.settings.local` ou `python src/manage.py migrate --settings=setup.settings.prod`
+
+3. Execute o arquivo `seed.py` para preencher o banco de dados com alguns pagamentos e usuários:
+
+    `python src/manage.py shell < src/seed.py --settings=setup.settings.local`
+
+    Se estiver no powershell utilize o comando:
+
+    `python src/manage.py shell --settings=setup.settings.local --command="exec(open('src\seed.py').read())"`
+
+4. Execute o servidor do Django:
+
+    `python src/manage.py runserver --settings=setup.settings.local` ou `python src/manage.py runserver --settings=setup.settings.prod`
+
+5. Execute o Celery e o Celery Beat. O Celery é responsável pela execução de algumas tarefas de forma assíncronas, neste projeto ele está sendo utilizado para envio de email e criação de logs*. Já o Celery Beat é usado para o agendamento da execução das tarefas, ele é responsável por rodar todos os dias uma função que irá verificar o vencimento dos pagamentos e desativar aqueles que estiverem vencidos.   
+
+	`celery -A setup --workdir src worker -l INFO`
+
+	`celery -A setup --workdir src beat -l INFO`
+
+*O plano free do Render não permite trabalhar com workers, por este motivo, em produção o Celery não está sendo usado. Porém, toda a configuração para a execução de tarefas assíncronas está disponível no código. 
+
+---
+## Utilizando o Projeto
+O arquivo seed.py, utilizado no item 3 da seção de Instalação, irá fornecer os usuários abaixo e 6 pagamentos de exemplo, sendo um vencido. Ao final da execução irá chamar a função para verificar o os pagamentos vencidos como forma de exemplificação da função.
+
+- admin@test.com: Superusuário Django
+- operator@test.com: Pode criar e ver todos os pagamentos, e criar e aprovar antecipações
+- supplier@test.com: Pode ver seus pagamentos cadastrados e solicitar antecipações
+- supplier2@test.com: Pode ver seus pagamentos cadastrados e solicitar antecipações
+
+A senha de todos usuários é: `test123456`
+
+Acesse `http://localhost:8000/` faça o login com algum dos usuários e solicite uma antecipação. Se estiver com o perfil "Operator" poderá aprovar ou reprovar a requisição. Todas estas ações estarão disponíveis em `http://localhost:8000/logs`.
+
+---
+## API Endpoints
+### Autenticação
+O projeto utiliza autenticação através de JWT, para se autenticar, encaminhe uma requisição do tipo POST para `http://localhost:8000/api/token/` o seguinte conteúdo com um usuário existente:
+
+```json
+{
+  "email": "email",
+  "password": "password"
+}
+```
+
+Este endpoint irá retorno um json conforme abaixo, utilize o valor da chave "access" em todas as requisições para garantir acesso autenticado:
+
+```json
+{
+  "access":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3BrIjoxLCJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiY29sZF9zdHVmZiI6IuKYgyIsImV4cCI6MTIzNDU2LCJqdGkiOiJmZDJmOWQ1ZTFhN2M0MmU4OTQ5MzVlMzYyYmNhOGJjYSJ9.NHlztMGER7UADHZJlxNG0WSi22a2KaYSfd1S-AuT7lU",
+  "refresh":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3BrIjoxLCJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImNvbGRfc3R1ZmYiOiLimIMiLCJleHAiOjIzNDU2NywianRpIjoiZGUxMmY0ZTY3MDY4NDI3ODg5ZjE1YWMyNzcwZGEwNTEifQ.aEoAYkSJjoWH1boshQAaTkf8G3yn0kapko6HFRt7Rh4"
+}
+```
+
+### Listando e Filtrando Pagamentos
+Para visualizar uma lista de pagamentos encaminhe uma requisição do tipo GET para `http://localhost:8000/payments/`. Esta requisição irá retornar o json conforme abaixo:
+
+```json
+{
+  "id": 2,
+  "supplier": 1,
+  "description": "Pagamento Teste 2",
+  "value": "851.00",
+  "date_due": "2023-03-31",
+  "is_active": true,
+  "created": "2023-03-01T15:13:27.470005-03:00",
+  "req_antecipation": {
+      "id": 1,
+      "payment": 2,
+      "requester": 2,
+      "request_date": "2023-03-01",
+      "fee": "25.53",
+      "status": "1",
+      "created": "2023-03-01T15:39:05.328825-03:00",
+      "updated": "2023-03-01T15:39:54.290121-03:00",
+      "antecipation": {
+          "id": 1,
+          "new_value": "825.47",
+          "created": "2023-03-01T15:39:54.332008-03:00",
+          "updated": "2023-03-01T15:39:54.332008-03:00",
+          "operator": 1,
+          "req_antecipation": 1
+      }
+  }
+},
+```
+
+Também é possível filtrar o resultado da lista através do endpoint: `http://localhost:8000/payments/status/`. Este endpoint recebe e retorna para os seguintes status:
+
+- unavailable: retorna os pagamentos indiponíveis para antecipação
+- avaliable: retorna os pagamento disponíveis para antecipação
+- requested: retornar os pagamentos que possuem um pedido de antecipação
+- approval: retorna os pagamentos com antecipações aprovadas
+- disapproval: retorna os pagamentos com antecipações reprovadas
+ 
+### Solicitando Antecipações
+Para solicitar uma antecipação de pagamento com um usuário logado encaminhe uma requisição do tipo POST para `http://localhost:8000/antecipation/create/` com o seguinte conteúdo:
+
+```json
+{
+  "payment": id,
+  "request_date": YYYY-MM-DD
+}
+```
+
+---
+## Testes
+Os testes podem ser executados através do comando:
+
+`python src/manage.py test --failfast --settings=setup.settings.local`
+
+
+---
 # Trabalhe na Codevance
 
 A [Codevance](https://codevance.com.br) é uma software house que tem como missão otimizar os resultados e gerar valor ao seu negócio utilizando tecnologia como meio.
