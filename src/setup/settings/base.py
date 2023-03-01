@@ -153,6 +153,9 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'
 
+ACCOUNT_FORMS = {
+    "signup": "apps.user_profile.forms.CustomSignupForm",
+}
 
 # CRISPY-FORM CONFIG
 CRISPY_TEMPLATE_PACK = "bootstrap5"
