@@ -21,4 +21,4 @@ class TestHomePageViews(TestCase):
     def test_home_page_view_authenticated_200(self):
         self.client.force_login(self.user)
         response = self.client.get('/')
-        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, '/payments/')

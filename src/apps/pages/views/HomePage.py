@@ -1,10 +1,10 @@
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
-from django.views.generic import TemplateView
+from django.views.generic import RedirectView
 
 
-class HomePage(TemplateView):
-    template_name = 'dashboard.html'
+class HomePage(RedirectView):
+    url = reverse_lazy('payments_list')
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
