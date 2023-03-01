@@ -53,8 +53,8 @@ class RequestAntecipationCreateAPIView(APIView):
 
         serializer.save(payment=payment, requester=request.user, fee=fee, request_date=data.get('request_date'))
 
-        log_create.delay(serializer.instance.id, request.user.id, type='0')
+        log_create(serializer.instance.id, request.user.id, type='0')
         msg = 'Antecipation request successfully sended!'
-        send_email.delay(payment.id, msg)
+        send_email(payment.id, msg)
 
         return Response(msg, status=status.HTTP_201_CREATED)
