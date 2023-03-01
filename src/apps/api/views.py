@@ -46,7 +46,7 @@ class RequestAntecipationCreateAPIView(APIView):
 
         payment = Payment.objects.filter(id=data.get('payment'), supplier__user=request.user).first()
         if not payment or not payment.is_active:
-            return Response({'detail': 'Pagamento não encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+            raise NotFound(detail="The requested payment was not found in the payment list", code=404)
 
         difference = payment.date_due - datetime.strptime(data.get('request_date'), '%Y-%m-%d').date()
         fee = payment.value * DAILY_TAX * difference.days
@@ -54,7 +54,7 @@ class RequestAntecipationCreateAPIView(APIView):
         serializer.save(payment=payment, requester=request.user, fee=fee, request_date=data.get('request_date'))
 
         log_create.delay(serializer.instance.id, request.user.id, type='0')
-        msg = 'Pedido de antecipação encaminhado com sucesso!'
+        msg = 'Antecipation request successfully sended!'
         send_email.delay(payment.id, msg)
 
         return Response(msg, status=status.HTTP_201_CREATED)
