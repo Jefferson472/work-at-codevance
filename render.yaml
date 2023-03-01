@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: codevance-payments
+    env: python
+    buildCommand: ./build.sh
+    startCommand: gunicorn --pythonpath src setup.wsgi
