@@ -49,6 +49,18 @@ supplier = Supplier.objects.create(
     name="Supplier",
 )
 
+user_supplier2 = CustomUser.objects.create(
+    email="supplier2@test.com",
+)
+
+user_supplier2.set_password("test123456")
+user_supplier2.save()
+
+supplier2 = Supplier.objects.create(
+    user=user_supplier2,
+    name="Supplier2",
+)
+
 
 # creating payments
 PAYMENTS_INFO = [
@@ -66,6 +78,13 @@ for payment in PAYMENTS_INFO:
         value=random.randrange(100, 1000),
         date_due=payment['date_due'],
     ))
+
+payments.append(Payment(
+    supplier=supplier2,
+    description='Pagamento Teste Supplier2',
+    value=random.randrange(100, 1000),
+    date_due=timezone.now().date() + timezone.timedelta(days=30),
+))
 
 Payment.objects.bulk_create(payments)
 
