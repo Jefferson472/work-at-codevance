@@ -9,6 +9,10 @@ O projeto Codevance Payments é um gerenciador de pagamentos que permite aos for
 
 [Codevance Payments](https://codevance-payments.onrender.com)
 
+## Fluxo do Projeto
+![Fluxo do Projeto](/docs/codevance-payments-fluxo.jpg)
+
+
 ---
 ## Instalando e Executando o Projeto
 Para executar o projeto localize o arquivo `default.env` e renomei para `.env` fornecendo os valores para as varáveis de ambiente. Se estiver executando local, somente os valores das variáveis `SECRET_KEY` e `CELERY_BROKER_URL` são necessárias.
