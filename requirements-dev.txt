@@ -1,4 +1,4 @@
 -r requirements.txt
 django-debug-toolbar==3.8.1
 flower==1.2.0
-gevent==22.10.2
+gevent==23.9.0
